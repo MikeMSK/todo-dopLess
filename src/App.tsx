@@ -1,26 +1,40 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useState, useEffect} from 'react';
 import './App.css';
 
+type PropsType = {
+    userId: number
+    id: number
+    title: string
+    completed: boolean
+}
+
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+    const [users, setUsers] = useState<Array<PropsType>>([])
+
+    useEffect(() => {
+        fetch('https://jsonplaceholder.typicode.com/todos')
+            .then(response => response.json())
+            .then(json => setUsers(json))
+    }, []);
+
+    const onClickHandler = () => {
+        setUsers([])
+    }
+    return (
+        <div className="App">
+            <button onClick={onClickHandler}>clean posts</button>
+            <ul>
+                {users.map((u, index) => {
+                    return <li key={index}>
+                        <span>{u.id} </span>
+                        <span>{u.title} </span>
+                        <span>{u.completed} </span>
+                    </li>
+                })}
+            </ul>
+        </div>
+    );
 }
 
 export default App;
